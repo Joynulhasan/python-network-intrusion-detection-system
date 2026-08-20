@@ -135,7 +135,7 @@ union select
 
 Example:
 
-![Port Scan Detection](screenshorts/payloads-scan-alert.png)
+![Port Scan Detection](screenshorts/payload-alert.png)
 
 ## 📧 Email Alert
 
@@ -143,11 +143,11 @@ When suspicious activity is detected, the system sends an email containing:
 
 Email Alert for port scan
 
-![Port Scan Detection](screenshots/port-scan-email.png)
+![Port Scan Detection](screenshorts/port-scan-email.png)
 
 Email Alert for payloads
 
-![Port Scan Detection](screenshots/payload-scan-email.png)
+![Port Scan Detection](screenshorts/payload-scan-email.png)
 
 * Alert type
 * Source IP

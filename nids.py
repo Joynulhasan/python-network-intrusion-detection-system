@@ -1,0 +1,116 @@
+from collections import defaultdict
+from datetime import datetime
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+import smtplib
+import sys
+from scapy.all import IP, TCP, UDP, Raw, sniff
+
+
+SMTP_SERVER = "smtp.gmail.com"
+SMTP_PORT = 587
+SENDER_EMAIL = "your_email@gmail.com"       # your mail
+SENDER_PASSWORD = "your_app_password"        # mail app password
+RECEIVER_EMAIL = "receiver_email@gmail.com"   # recive email
+
+
+port_scan_tracker = defaultdict(set)
+PORT_SCAN_THRESHOLD = 20  
+
+SUSPICIOUS_KEYWORDS = [b"etc/passwd", b"cmd.exe", b"/bin/sh", b"union select", b"' OR '1'='1"]
+
+#sent mail in user 
+def send_email_alert(subject, body):
+    
+    try:
+        msg = MIMEMultipart()
+        msg['From'] = SENDER_EMAIL
+        msg['To'] = RECEIVER_EMAIL
+        msg['Subject'] = subject
+
+        msg.attach(MIMEText(body, 'plain'))
+
+        # SMTP server conncet.
+
+        server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
+        server.starttls()  #
+        server.login(SENDER_EMAIL, SENDER_PASSWORD)
+        server.send_message(msg)
+        server.quit()
+        
+        print("📧 [INFO] Email alert sent successfully!")
+    except Exception as e:
+        print(f"❌ [ERROR] Failed to send email: {e}")
+
+# process start in here.
+def process_packet(packet):
+
+   
+    if IP in packet:
+        src_ip = packet[IP].src
+        dst_ip = packet[IP].dst
+        proto = "TCP" if TCP in packet else "UDP" if UDP in packet else "Other"
+
+        if TCP in packet or UDP in packet:
+            dst_port = packet[TCP].dport if TCP in packet else packet[UDP].dport
+            
+            port_scan_tracker[src_ip].add(dst_port)
+            
+            # Port scan detection 
+
+            if len(port_scan_tracker[src_ip]) > PORT_SCAN_THRESHOLD:
+                alert_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                alert_msg = (
+                    f"[🚨 ALARM] Potential Port Scan Detected!\n\n"
+                    f"Source IP: {src_ip}\n"
+                    f"Unique Ports Scanned: {len(port_scan_tracker[src_ip])}\n"
+                    f"Protocol: {proto}\n"
+                    f"Time: {alert_time}"
+                )
+                print(alert_msg)
+                
+                
+                subject = f"🚨 Network Indentfy Detection Scanne Alert: Port Scan Detected from {src_ip}"
+                send_email_alert(subject, alert_msg)
+                
+                port_scan_tracker[src_ip].clear()
+
+        # Suspicious Payload detection 
+        if packet.haslayer(Raw):
+            payload = packet[Raw].load
+            for keyword in SUSPICIOUS_KEYWORDS:
+                if keyword in payload:
+                    alert_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                    matched_sig = keyword.decode(errors='ignore')
+                    
+                    alert_msg = (
+                        f"[🚨 ALARM] Suspicious Payload Detected!\n\n"
+                        f"Source IP: {src_ip}\n"
+                        f"Destination IP: {dst_ip}\n"
+                        f"Protocol: {proto}\n"
+                        f"Time: {alert_time}\n"
+                        f"Matched Signature: {matched_sig}"
+                    )
+                    print(alert_msg)
+                    
+                    
+                    subject = f"🚨 Network Indentfy Detection Scanne Alert: Suspicious Payload from {src_ip}"
+                    send_email_alert(subject, alert_msg)
+
+def main():
+    print("="*60)
+    print("🚀 Initializing Python Network Intrusion Detection System...")
+    print("="*60)
+    print("[*] Sniffing network traffic... \n Press Ctrl+C to stop.\n")
+    
+    try:
+        sniff(prn=process_packet, store=0)
+    except KeyboardInterrupt:
+        print("\n[-] Stopping NIDS. Exiting safely.")
+        sys.exit(0)
+    except PermissionError:
+        print("\n[X] Error: Run this script with Administrator/sudo privileges!")
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main()

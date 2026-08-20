@@ -165,12 +165,6 @@ Add screenshots of:
 3. Suspicious payload detection
 4. Email notification
 
-Place them inside the `screenshorts/` directory.
-
-```markdown
-![NIDS Running](screenshorts)
-```
-
 ## 🎯 Learning Objectives
 
 This project demonstrates practical knowledge of:

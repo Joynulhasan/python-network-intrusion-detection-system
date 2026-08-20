@@ -155,16 +155,7 @@ Email Alert for payloads
 * Protocol
 * Detection time
 * Matched signature / number of scanned ports
-
-## 📸 Screenshots
-
-Add screenshots of:
-
-1. NIDS running
-2. Port scan detection
-3. Suspicious payload detection
-4. Email notification
-
+  
 ## 🎯 Learning Objectives
 
 This project demonstrates practical knowledge of:

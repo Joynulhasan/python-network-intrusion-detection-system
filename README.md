@@ -89,7 +89,7 @@ SENDER_PASSWORD=your_app_password
 RECEIVER_EMAIL=receiver_email@gmail.com
 ```
 
-⚠️ **Never upload your Gmail password or App Password to GitHub.**
+
 
 ## ▶️ Running the NIDS
 

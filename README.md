@@ -39,7 +39,7 @@ python-network-intrusion-detection-system/
 │   ├── nids-running.png
 │   ├── port-scan-alert.png
 │   ├── payload-alert.png
-│   └── email-alert.png
+│   └── email-alert.png 
 
 ```
 
@@ -107,13 +107,7 @@ sudo python3 nids.py
 
 You should see:
 
-```text
-============================================================
-🚀 Initializing Python Network Intrusion Detection System...
-============================================================
-[*] Sniffing network traffic...
-Press Ctrl+C to stop.
-```
+![NIDS Running](screenshorts/nids-running.png)
 
 ## 🚨 Port Scan Detection
 
@@ -123,14 +117,7 @@ If an IP scans more than **20 unique ports**, the system generates an alert.
 
 Example:
 
-```text
-[🚨 ALARM] Potential Port Scan Detected!
-
-Source IP: 192.168.1.10
-Unique Ports Scanned: 21
-Protocol: TCP
-Time: 2026-08-20 16:20:35
-```
+![Port Scan Detection](screenshorts/port-scan-alert.png)
 
 An email alert is then sent to the configured receiver.
 
@@ -148,19 +135,19 @@ union select
 
 Example:
 
-```text
-[🚨 ALARM] Suspicious Payload Detected!
-
-Source IP: 192.168.1.10
-Destination IP: 192.168.1.20
-Protocol: TCP
-Time: 2026-08-20 16:22:10
-Matched Signature: /bin/sh
-```
+![Port Scan Detection](screenshorts/payloads-scan-alert.png)
 
 ## 📧 Email Alert
 
 When suspicious activity is detected, the system sends an email containing:
+
+Email Alert for port scan
+
+![Port Scan Detection](screenshots/port-scan-email.png)
+
+Email Alert for payloads
+
+![Port Scan Detection](screenshots/payload-scan-email.png)
 
 * Alert type
 * Source IP
@@ -178,12 +165,10 @@ Add screenshots of:
 3. Suspicious payload detection
 4. Email notification
 
-Place them inside the `screenshots/` directory.
-
-Example:
+Place them inside the `screenshorts/` directory.
 
 ```markdown
-![NIDS Running](screenshots/nids-running.png)
+![NIDS Running](screenshorts)
 ```
 
 ## 🎯 Learning Objectives
